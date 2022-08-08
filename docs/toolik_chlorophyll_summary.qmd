@@ -1,0 +1,55 @@
+---
+title: "Toolik Lake Chlorophyll"
+author: "Hailey Veirs"
+format: html
+editor: visual
+execute: 
+  echo: true
+  warning: false
+---
+
+Load packages
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(here)
+```
+
+Read in the data
+
+```{r}
+toolik_chlorophyll <- read_csv(here::here("data", 
+                                          "data-raw", 
+                                          "toolik_chlorophyll.csv"), 
+                               na = c("."))
+```
+
+Then clean up the column names/variables using janitor::clean_names
+
+```{r}
+toolik_chloro_clean <- toolik_chlorophyll %>% clean_names()
+names(toolik_chloro_clean)
+```
+
+```{r}
+skimr::skim(toolik_chloro_clean)
+```
+
+```{r}
+chlorophyll_pprod_graph <- ggplot(data = toolik_chloro_clean, 
+                                  aes(x = active_chl_a_ug_l, 
+                                      y = pprod_mg_available_c_m3_d)) + 
+  geom_point()
+
+chlorophyll_pprod_graph
+```
+
+```{r}
+ggsave(plot = chlorophyll_pprod_graph, 
+       here::here("figs", "chlorophyll_pprod_graph.jpg"), 
+       width = 8, 
+       height = 8, 
+       dpi = 200)
+```
+
